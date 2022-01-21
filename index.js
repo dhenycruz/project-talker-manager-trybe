@@ -21,13 +21,13 @@ app.listen(PORT, () => {
 
 app.get('/talker/search', async (request, response) => {
   const { authorization } = request.headers;
-  const { search } = request.query;
+  const { q } = request.query;
   const tokenStatus = auth.validateToken(authorization);
   if (!tokenStatus.validate) {
     return response.status(401).json({ message: tokenStatus.message });
   }
 
-  const talker = await crud.talkSearch(search);
+  const talker = await crud.talkSearch(q);
   response.status(200).json(talker);
 });
 
