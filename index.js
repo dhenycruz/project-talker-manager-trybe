@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
+const crud = require('./crud');
 const auth = require('./autheFunctions');
 
 const app = express();
@@ -71,14 +72,22 @@ app.post('/talker', async (request, response) => {
     return response.status(400).json({ message: talkerStatus.message });
   }
 
-  const newTalker = await auth.saveTalker(request.body);
+  const newTalker = await crud.saveTalker(request.body);
   response.status(201).json(newTalker);
 });
 
-/* fs.readFile('./talker.json', 'utf-8').then((
-    data,
-  ) => {
-    const dataSave = JSON.parse(data);
-    dataSave.push(request.body);
-    fs.writeFile('./talker.json', JSON.stringify(dataSave));
-  }); */
+app.put('/talker/:id', async (request, response) => {
+  const { authorization } = request.headers;
+  const { id } = request.params;
+  const { name, age, talk } = request.body;
+  const tokenStatus = auth.validateToken(authorization);
+  const talkerStatus = auth.validateTalker(name, age, talk);
+  if (!tokenStatus.validate) {
+    return response.status(401).json({ message: tokenStatus.message });
+  }
+  if (!talkerStatus.validate) {
+    return response.status(400).json({ message: talkerStatus.message });
+  }
+  const talkerUpdate = await crud.updateTalker(id, request.body);
+  response.status(200).json(talkerUpdate);
+});

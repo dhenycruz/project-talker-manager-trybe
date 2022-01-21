@@ -1,5 +1,3 @@
-const fs = require('fs').promises;
-
 const generateToken = () => {
   let token = '';
   for (let index = 1; index <= 16; index += 1) {
@@ -165,31 +163,10 @@ const validateTalker = (name, age, talk) => {
   };
 };
 
-const saveTalker = ({ name, age, talk }) => {
-  const talker = fs.readFile('./talker.json', 'utf-8').then((
-    data,
-  ) => {
-    const dataSave = JSON.parse(data);
-    const id = dataSave.length + 1;
-    const newTalker = {
-      age,
-      id,
-      name,
-      talk,
-    };
-    dataSave.push(newTalker);
-    fs.writeFile('./talker.json', JSON.stringify(dataSave));
-    return newTalker;
-  });
-
-  return talker;
-};
-
 module.exports = {
   generateToken,
   validateEmail,
   validatePassWord,
   validateToken,
   validateTalker,
-  saveTalker,
 };
