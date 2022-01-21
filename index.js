@@ -19,6 +19,18 @@ app.listen(PORT, () => {
   console.log('Online');
 });
 
+app.get('/talker/search', async (request, response) => {
+  const { authorization } = request.headers;
+  const { search } = request.query;
+  const tokenStatus = auth.validateToken(authorization);
+  if (!tokenStatus.validate) {
+    return response.status(401).json({ message: tokenStatus.message });
+  }
+
+  const talker = await crud.talkSearch(search);
+  response.status(200).json(talker);
+});
+
 app.get('/talker', (_request, response) => {
   // const data = JSON.parse(fs.readFileSync('./talker.json'));
   fs.readFile('./talker.json', 'utf-8').then((

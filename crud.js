@@ -49,8 +49,25 @@ const deleteTalker = (id) => {
   });
 };
 
+const talkSearch = (search) => {
+  const talker = fs.readFile(FILE, 'utf-8').then((data) => {
+    const dataArray = JSON.parse(data);
+    const searchFilter = dataArray.filter((res) => res.name.includes(search));
+    if (search === '' || search === undefined) {
+      return dataArray;
+    }
+    if (searchFilter.length < 1) {
+      return [];
+    }
+    return searchFilter;
+  });
+
+  return talker;
+};
+
 module.exports = {
   saveTalker,
   updateTalker,
   deleteTalker,
+  talkSearch,
 };
