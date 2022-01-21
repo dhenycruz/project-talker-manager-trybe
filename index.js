@@ -91,3 +91,16 @@ app.put('/talker/:id', async (request, response) => {
   const talkerUpdate = await crud.updateTalker(id, request.body);
   response.status(200).json(talkerUpdate);
 });
+
+app.delete('/talker/:id', async (request, response) => {
+  const { authorization } = request.headers;
+  const { id } = request.params;
+  const tokenStatus = auth.validateToken(authorization);
+
+  if (!tokenStatus.validate) {
+    return response.status(401).json({ message: tokenStatus.message });
+  }
+
+  await crud.deleteTalker(id);
+  response.status(204).send();
+});
